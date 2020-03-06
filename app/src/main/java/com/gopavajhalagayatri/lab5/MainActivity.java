@@ -14,13 +14,15 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sP;
     SharedPreferences.Editor editor;
     storage store;
-    TextView temp = findViewById(R.id.temp);
-    TextView perm = findViewById(R.id.perm);
+    TextView temp;
+    TextView perm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        temp = findViewById(R.id.temp);
+        perm = findViewById(R.id.perm);
         sP = getSharedPreferences("Settings",Context.MODE_PRIVATE);
         editor = sP.edit();
         store = new storage();
@@ -28,12 +30,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 editor.clear().commit();
+                show();
             }
         });
         temp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 store = new storage();
+                show();
             }
         });
 
@@ -66,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         store.restart++;
-        editor.putInt("create", sP.getInt("create", 0) + 1);
+        editor.putInt("restart", sP.getInt("restart", 0) + 1);
         show();
     }
 
     protected void onStop() {
         super.onStop();
         store.stop++;
-        editor.putInt("restart", sP.getInt("restart", 0) + 1);
+        editor.putInt("stop", sP.getInt("stop", 0) + 1);
         show();
     }
 
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void show(){
+        editor.apply();
         temp.setText("Create: " + store.create +
                     "\nStart: " + store.start +
                     "\nResume: " + store.resume +
